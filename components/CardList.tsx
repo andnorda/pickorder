@@ -1,31 +1,21 @@
 import { arrayMove } from "@dnd-kit/sortable";
 import SortableList from "../components/SortableList";
 import SortableItem from "../components/SortableItem";
-import Item from "../components/Item";
+import Card from "../components/Card";
 import { useLocalStorage } from "usehooks-ts";
 
 interface Items {
   [id: string]: { name: string };
 }
 
-const CardList = () => {
-  const [order, setOrder] = useLocalStorage("order", [
-    "6",
-    "5",
-    "2",
-    "4",
-    "1",
-    "3",
-  ]);
-
-  const items: Items = {
-    "1": { name: "one" },
-    "2": { name: "two" },
-    "3": { name: "three" },
-    "4": { name: "four" },
-    "5": { name: "five" },
-    "6": { name: "six" },
-  };
+const CardList = ({
+  defaultOrder,
+  cards,
+}: {
+  defaultOrder: string[];
+  cards: any;
+}) => {
+  const [order, setOrder] = useLocalStorage("order", defaultOrder);
 
   const onChange = (oldIndex: number, newIndex: number) =>
     setOrder((order) => arrayMove(order, oldIndex, newIndex));
@@ -43,7 +33,7 @@ const CardList = () => {
       <SortableList ids={order} onChange={onChange}>
         {order.map((id) => (
           <SortableItem key={id} id={id}>
-            <Item>{items[id].name}</Item>
+            <Card {...cards[id]} />
           </SortableItem>
         ))}
       </SortableList>
