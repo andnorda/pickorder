@@ -1,13 +1,7 @@
-import { ForwardedRef, forwardRef, HTMLAttributes } from "react";
+import { ReactNode } from "react";
 
-interface ItemProps extends HTMLAttributes<HTMLDivElement> {}
+const Item = ({ children }: { children: ReactNode }) => (
+  <div style={{ width: 100 }}>{children}</div>
+);
 
-export const Item = (props: ItemProps, ref: ForwardedRef<HTMLDivElement>) => {
-  return (
-    <div {...props} ref={ref}>
-      {props.id}
-    </div>
-  );
-};
-
-export default forwardRef<HTMLDivElement, ItemProps>(Item);
+export default Item;

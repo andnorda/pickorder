@@ -1,58 +1,42 @@
-import React, { useState } from "react";
-import {
-  DndContext,
-  closestCenter,
-  KeyboardSensor,
-  PointerSensor,
-  useSensor,
-  useSensors,
-  DragEndEvent,
-} from "@dnd-kit/core";
-import {
-  arrayMove,
-  SortableContext,
-  sortableKeyboardCoordinates,
-} from "@dnd-kit/sortable";
+import { useState } from "react";
+import { arrayMove } from "@dnd-kit/sortable";
 
-import { SortableItem } from "./SortableItem";
+import SortableList from "./SortableList";
+import SortableItem from "./SortableItem";
+import Item from "./Item";
 
-function App() {
-  const [items, setItems] = useState(["1", "2", "3", "4", "5", "6"]);
-  const sensors = useSensors(
-    useSensor(PointerSensor),
-    useSensor(KeyboardSensor, {
-      coordinateGetter: sortableKeyboardCoordinates,
-    })
-  );
+const App = () => {
+  const [items, setItems] = useState([
+    { id: "1", name: "one" },
+    { id: "2", name: "two" },
+    { id: "3", name: "three" },
+    { id: "4", name: "four" },
+    { id: "5", name: "five" },
+    { id: "6", name: "six" },
+  ]);
+
+  const onChange = (oldIndex: number, newIndex: number) =>
+    setItems((items) => arrayMove(items, oldIndex, newIndex));
 
   return (
-    <DndContext
-      sensors={sensors}
-      collisionDetection={closestCenter}
-      onDragEnd={handleDragEnd}
+    <ol
+      style={{
+        listStyle: "none",
+        margin: 0,
+        padding: 0,
+        display: "flex",
+        flexWrap: "wrap",
+      }}
     >
-      <SortableContext items={items}>
-        {items.map((id) => (
-          <SortableItem key={id} id={id} />
+      <SortableList ids={items.map(({ id }) => id)} onChange={onChange}>
+        {items.map(({ id, name }) => (
+          <SortableItem key={id} id={id}>
+            <Item>{name}</Item>
+          </SortableItem>
         ))}
-      </SortableContext>
-    </DndContext>
+      </SortableList>
+    </ol>
   );
-
-  function handleDragEnd(event: DragEndEvent) {
-    const { active, over } = event;
-
-    if (!over) return;
-
-    if (active.id !== over.id) {
-      setItems((items) => {
-        const oldIndex = items.indexOf(active.id);
-        const newIndex = items.indexOf(over.id);
-
-        return arrayMove(items, oldIndex, newIndex);
-      });
-    }
-  }
-}
+};
 
 export default App;
