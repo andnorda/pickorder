@@ -8,7 +8,8 @@ interface Items {
   [id: string]: { name: string };
 }
 
-const App = () => {
+const App = (props: any) => {
+  console.log(props);
   const [order, setOrder] = useLocalStorage("order", [
     "6",
     "5",
@@ -50,5 +51,13 @@ const App = () => {
     </ol>
   );
 };
+
+export async function getStaticProps() {
+  return {
+    props: {
+      wat: "omg",
+    },
+  };
+}
 
 export default App;
