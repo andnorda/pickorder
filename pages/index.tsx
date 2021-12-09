@@ -1,22 +1,34 @@
-import { useState } from "react";
 import { arrayMove } from "@dnd-kit/sortable";
-
 import SortableList from "./SortableList";
 import SortableItem from "./SortableItem";
 import Item from "./Item";
+import { useLocalStorage } from "usehooks-ts";
+
+interface Items {
+  [id: string]: { name: string };
+}
 
 const App = () => {
-  const [items, setItems] = useState([
-    { id: "1", name: "one" },
-    { id: "2", name: "two" },
-    { id: "3", name: "three" },
-    { id: "4", name: "four" },
-    { id: "5", name: "five" },
-    { id: "6", name: "six" },
+  const [order, setOrder] = useLocalStorage("order", [
+    "6",
+    "5",
+    "2",
+    "4",
+    "1",
+    "3",
   ]);
 
+  const items: Items = {
+    "1": { name: "one" },
+    "2": { name: "two" },
+    "3": { name: "three" },
+    "4": { name: "four" },
+    "5": { name: "five" },
+    "6": { name: "six" },
+  };
+
   const onChange = (oldIndex: number, newIndex: number) =>
-    setItems((items) => arrayMove(items, oldIndex, newIndex));
+    setOrder((order) => arrayMove(order, oldIndex, newIndex));
 
   return (
     <ol
@@ -28,10 +40,10 @@ const App = () => {
         flexWrap: "wrap",
       }}
     >
-      <SortableList ids={items.map(({ id }) => id)} onChange={onChange}>
-        {items.map(({ id, name }) => (
+      <SortableList ids={order} onChange={onChange}>
+        {order.map((id) => (
           <SortableItem key={id} id={id}>
-            <Item>{name}</Item>
+            <Item>{items[id].name}</Item>
           </SortableItem>
         ))}
       </SortableList>
